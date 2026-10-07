@@ -7,8 +7,10 @@ import org.springframework.context.annotation.Configuration;
 
 import jakarta.annotation.PostConstruct;
 
+import java.io.ByteArrayInputStream;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 
 @Configuration
 public class FirebaseConfig {
@@ -20,11 +22,32 @@ public class FirebaseConfig {
             return;
         }
 
-        FileInputStream serviceAccount =
-                new FileInputStream("config/firebase-service-account.json");
+        String firebaseCredentials = System.getenv("FIREBASE_SERVICE_ACCOUNT");
+
+        GoogleCredentials credentials;
+
+        if (firebaseCredentials != null && !firebaseCredentials.isBlank()) {
+
+            credentials = GoogleCredentials.fromStream(
+                    new ByteArrayInputStream(
+                            firebaseCredentials.getBytes(StandardCharsets.UTF_8)
+                    )
+            );
+
+            System.out.println("Firebase credentials loaded from environment variable.");
+
+        } else {
+
+            FileInputStream serviceAccount =
+                    new FileInputStream("config/firebase-service-account.json");
+
+            credentials = GoogleCredentials.fromStream(serviceAccount);
+
+            System.out.println("Firebase credentials loaded from local service-account file.");
+        }
 
         FirebaseOptions options = FirebaseOptions.builder()
-                .setCredentials(GoogleCredentials.fromStream(serviceAccount))
+                .setCredentials(credentials)
                 .build();
 
         FirebaseApp.initializeApp(options);
