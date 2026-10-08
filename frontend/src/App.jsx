@@ -13,7 +13,7 @@ import * as FirebaseModule from "./firebase";
 // uses the already-initialized default Firebase app.
 const getFirebaseAuth = () => FirebaseModule.auth || getAuth();
 
-const API = "http://localhost:8080";
+const API = "https://ss-agarwal-smart-shop.onrender.com";
 const GlobalStyles = () => (
   <style>{`
     .smart-page{min-height:100dvh;height:100dvh;overflow:hidden;background:linear-gradient(135deg,#07111f 0%,#0f1f35 55%,#162d49 100%);color:#f8fafc;}
